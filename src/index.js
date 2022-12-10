@@ -1,22 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
     addData();
 })
-
-//fetches the dog data
-function getDogs(){
-    return fetch("http://localhost:3000/dogs")
-    .then(resp=>resp.json())
-    .then(data=>data)
-}
-
-
+let tableBody = document.getElementById('table-body')
 // adds and displays data to the table body
-const addData= async ()=>{
-    let tableBody = document.getElementById('table-body')
+const addData= async ()=>{   
     let dogs = await getDogs()
     console.log(dogs) 
-    
+
+    let tableBody = document.getElementById('table-body')  
     dogs.map(dog=>{
+        //create the  table rows
         const tableRow = document.createElement('tr')
         tableRow.innerHTML= `
         <tr>
@@ -28,23 +21,69 @@ const addData= async ()=>{
         `
         tableBody.appendChild(tableRow)       
 
-    })
-    tableBody.addEventListener('click',editDog)
+    })  
+    tableBody.addEventListener('click',editDog) 
 }
 
 
 
 //edits dog information
 const editDog=(e)=>{
-    const form = document.querySelector('form')
-    const btn = document.querySelector('button')
-    let row = btn.parentElement.parentElement.children;
-    console.log(row)
-	form.children[0].value = row[0].innerText
-	form.children[1].value = row[1].innerText
-	form.children[2].value = row[2].innerText
-	form.children[3].dataset.id = row[3].children[0].dataset.id
+    const nameInput= document.getElementById('enter-name')
+    const breedInput= document.getElementById('enter-breed')
+    const nameSex= document.getElementById('enter-sex')
+   
+    //tr refer to tableRow
+    let tr = e.target.parentElement.parentElement.children;
+    console.log(tr)
+	
+    nameInput.value = tr[0].innerText
+	breedInput.value = tr[1].innerText
+	nameSex.value = tr[2].innerText
+	// form[3].dataset.id = tr[3].children[0].dataset.id
 }
+
+const form = document.getElementById('dog-form')
+if(form){
+    form.addEventListener('submit', handleSubmit,false)
+}
+function handleSubmit(e){
+    e.preventDefault();
+    const nameInput= document.getElementById('enter-name')
+    const breedInput= document.getElementById('enter-breed')
+    const nameSex= document.getElementById('enter-sex')
+    let dogObj={
+        name:nameInput.value,
+        breed:breedInput.value,
+        sex:nameSex.value
+    }
+    updateDog(dogObj)
+    form.reset()
+
+}
+
+//fetches the dog data
+function getDogs(){
+    return fetch("http://localhost:3000/dogs")
+    .then(resp=>resp.json())
+    .then(data=>data)
+}
+
+//updates dog information
+function updateDog(dogObj){
+    fetch(`http://localhost:3000/dogs/${dogObj.id}`,{
+        method: "PATCH",
+        headers:{
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(dogObj)
+    }
+    )
+    .then(resp=>resp.json())
+    .then(dog=>console.log(dog))
+}
+
+
 
 
 
