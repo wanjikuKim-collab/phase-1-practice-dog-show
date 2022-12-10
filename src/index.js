@@ -41,26 +41,23 @@ const editDog=(e)=>{
 	breedInput.value = tr[1].innerText
 	nameSex.value = tr[2].innerText
 	// form[3].dataset.id = tr[3].children[0].dataset.id
-}
-
-const form = document.getElementById('dog-form')
-if(form){
-    form.addEventListener('submit', handleSubmit,false)
-}
-function handleSubmit(e){
-    e.preventDefault();
-    const nameInput= document.getElementById('enter-name')
-    const breedInput= document.getElementById('enter-breed')
-    const nameSex= document.getElementById('enter-sex')
-    let dogObj={
-        name:nameInput.value,
-        breed:breedInput.value,
-        sex:nameSex.value
+    
+    const form = document.getElementById('dog-form')
+    if(form){
+        form.addEventListener('submit', (e)=>{
+            e.preventDefault()
+            console.log(e)
+            //contents of inputs will be displayed in table
+            tr[0].textContent=nameInput.value
+            tr[1].textContent=breedInput.value
+            tr[2].textContent=nameSex.value
+        },false)
     }
-    updateDog(dogObj)
-    form.reset()
+
 
 }
+
+
 
 //fetches the dog data
 function getDogs(){
@@ -70,18 +67,18 @@ function getDogs(){
 }
 
 //updates dog information
-function updateDog(dogObj){
-    fetch(`http://localhost:3000/dogs/${dogObj.id}`,{
-        method: "PATCH",
-        headers:{
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(dogObj)
-    }
-    )
-    .then(resp=>resp.json())
-    .then(dog=>console.log(dog))
-}
+// function updateDog(dogObj){
+//     fetch(`http://localhost:3000/dogs/${dogObj.id}`,{
+//         method: "PATCH",
+//         headers:{
+//             "Content-Type": "application/json"
+//         },
+//         body: JSON.stringify(dogObj)
+//     }
+//     )
+//     .then(resp=>resp.json())
+//     .then(dog=>console.log(dog))
+// }
 
 
 
