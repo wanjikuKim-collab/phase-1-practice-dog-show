@@ -48,9 +48,8 @@ const editDog=(e)=>{
             e.preventDefault()
             console.log(e)
             //contents of inputs will be displayed in table
-            tr[0].textContent=nameInput.value
-            tr[1].textContent=breedInput.value
-            tr[2].textContent=nameSex.value
+          
+            
         },false)
     }
 
@@ -66,19 +65,19 @@ function getDogs(){
     .then(data=>data)
 }
 
-//updates dog information
-// function updateDog(dogObj){
-//     fetch(`http://localhost:3000/dogs/${dogObj.id}`,{
-//         method: "PATCH",
-//         headers:{
-//             "Content-Type": "application/json"
-//         },
-//         body: JSON.stringify(dogObj)
-//     }
-//     )
-//     .then(resp=>resp.json())
-//     .then(dog=>console.log(dog))
-// }
+// updates dog information
+function updateDog(dogObj){
+    fetch(`http://localhost:3000/dogs/${dogObj.id}`,{
+        method: "PATCH",
+        headers:{
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(dogObj)
+    }
+    )
+    .then(resp=>resp.json())
+    .then(dog=>console.log(dog))
+}
 
 
 
