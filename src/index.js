@@ -1,13 +1,14 @@
 document.addEventListener('DOMContentLoaded', () => {
     addData();
+    changesMade()
 })
-let tableBody = document.getElementById('table-body')
-// adds and displays data to the table body
-const addData= async ()=>{   
-    let dogs = await getDogs()
-    console.log(dogs) 
 
-    let tableBody = document.getElementById('table-body')  
+
+
+const addData= async ()=>{   
+    const tableBody = document.getElementById('table-body'); 
+    let dogs = await getDogs()
+    
     dogs.map(dog=>{
         //create the  table rows
         const tableRow = document.createElement('tr')
@@ -19,6 +20,7 @@ const addData= async ()=>{
             <td><button>Edit Dog</button></td>
         </tr>        
         `
+        tableRow.dataset.id = dog.id;
         tableBody.appendChild(tableRow)       
 
     })  
@@ -29,34 +31,36 @@ const addData= async ()=>{
 
 //edits dog information
 const editDog=(e)=>{
-    const nameInput= document.getElementById('enter-name')
-    const breedInput= document.getElementById('enter-breed')
-    const nameSex= document.getElementById('enter-sex')
-   
+    const form = document.querySelector('#dog-form');
+
     //tr refer to tableRow
-    let tr = e.target.parentElement.parentElement.children;
-    console.log(tr)
-	
-    nameInput.value = tr[0].innerText
-	breedInput.value = tr[1].innerText
-	nameSex.value = tr[2].innerText
-	// form[3].dataset.id = tr[3].children[0].dataset.id
+    let tr = e.target.parentElement.parentElement.children;	
+    const nameInput = tr[0].innerText
+	const breedInput = tr[1].innerText
+	const nameSex= tr[2].innerText
     
-    const form = document.getElementById('dog-form')
-    if(form){
-        form.addEventListener('submit', (e)=>{
-            e.preventDefault()
-            console.log(e)
-            //contents of inputs will be displayed in table
-          
-            
-        },false)
-    }
-
-
+    //display table content on the form
+    form[0].value=nameInput;
+    form[1].value=breedInput;
+    form[2].value=nameSex;    
+    form.dataset.id = e.target.parentNode.parentNode.dataset.id
 }
 
-
+const changesMade=()=>{
+    const form = document.querySelector('#dog-form');
+    form.addEventListener("submit", (e)=>{
+        e.preventDefault()
+        //acces by name value
+         const dogForm = e.target;
+         const id = dogForm.dataset.id;
+         console.log(id)
+         const name = dogForm.name.value;
+         const breed = dogForm.breed.value;
+         const sex = dogForm.sex.value;
+         updateDog(id,{name,breed,sex})
+         
+    })
+}
 
 //fetches the dog data
 function getDogs(){
@@ -66,17 +70,17 @@ function getDogs(){
 }
 
 // updates dog information
-function updateDog(dogObj){
-    fetch(`http://localhost:3000/dogs/${dogObj.id}`,{
+function updateDog(id,{name,breed,sex}){
+    fetch(`http://localhost:3000/dogs/${id}`,{
         method: "PATCH",
         headers:{
             "Content-Type": "application/json"
         },
-        body: JSON.stringify(dogObj)
+        body: JSON.stringify({name,breed,sex})
     }
     )
     .then(resp=>resp.json())
-    .then(dog=>console.log(dog))
+    .then(data=>console.log(data))
 }
 
 
